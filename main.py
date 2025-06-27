@@ -40,10 +40,10 @@ def _(mo):
 
 @app.cell
 def _(sqlalchemy):
-    db = "postgres"
-    user = "postgres.rtkdpjkstgkdgfdxfssk"
-    password = "4Q5rGypzheEknaOP"
-    port = "5432"
+    db = ""
+    user = ""
+    password = ""
+    port = ""
 
     DATABASE_URL = (
                 f"postgresql://{user}:{password}"
@@ -78,10 +78,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT COUNT(*) FROM loan_default
+
         """
     )
     return
@@ -94,10 +94,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT * FROM loan_default LIMIT 5
+
         """
     )
     return
@@ -110,10 +110,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT id, year, gender FROM loan_default
+
         """
     )
     return
@@ -126,10 +126,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT DISTINCT gender FROM loan_default
+
         """
     )
     return
@@ -142,12 +142,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT * 
-        FROM loan_default
-        WHERE gender = 'Female'
+
         """
     )
     return
@@ -160,14 +158,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT id, loan_limit, loan_purpose, approv_in_adv
-        FROM loan_default
-        WHERE loan_limit IS NOT NULL
-            AND loan_purpose IS NOT NULL
-            AND approv_in_adv IS NOT NULL
+
         """
     )
     return
@@ -180,18 +174,10 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        WITH total_loan_types AS (
-        SELECT 
-          DISTINCT loan_type, 
-          COUNT(*) AS total
-        FROM loan_default
-        GROUP BY loan_type
-        ORDER BY loan_type, total ASC)
 
-        SELECT * FROM total_loan_types
         """
     )
     return
@@ -204,69 +190,20 @@ def _(mo):
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     _df = mo.sql(
         f"""
-        SELECT 
-            DISTINCT id,
-            year,
-            CASE 
-                WHEN gender = 'Sex Not Available' THEN NULL
-                WHEN gender = 'Male' THEN 'M'
-                WHEN gender = 'Female' THEN 'F'
-                WHEN gender = 'Joint' THEN 'Couple'
 
-            ELSE gender END AS gender,
-            loan_type,
-            approv_in_adv, 
-            loan_purpose,
-            credit_worthiness,
-            loan_amount,
-            lump_sum_payment,
-            status
-        FROM loan_default
-        WHERE gender IS NOT NULL AND credit_worthiness = 'l1'
         """
     )
     return
 
 
 @app.cell
-def _(loan_default, mo):
+def _(mo):
     df = mo.sql(
         f"""
-        WITH cleaned_data AS (
-            SELECT 
-            DISTINCT id,
-            year,
-            CASE 
-                WHEN gender = 'Sex Not Available' THEN NULL
-                WHEN gender = 'Male' THEN 'M'
-                WHEN gender = 'Female' THEN 'F'
-                WHEN gender = 'Joint' THEN 'Couple'
 
-            ELSE gender END AS gender,
-            loan_type,
-            approv_in_adv, 
-            loan_purpose,
-            credit_worthiness,
-            loan_amount,
-            lump_sum_payment,
-            status
-        FROM loan_default
-        WHERE credit_worthiness = 'l1')
-
-        SELECT id,
-            gender,
-            loan_type,
-            approv_in_adv, 
-            loan_amount,
-            lump_sum_payment,
-            status
-            FROM cleaned_data
-        WHERE gender IS NOT NULL
-            AND approv_in_adv IS NOT NULL
-            AND loan_purpose IS NOT NULL
         """
     )
     return (df,)
