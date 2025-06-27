@@ -23,7 +23,7 @@ def _():
     import sqlalchemy
     import pandas as pd
 
-    return os, pd, sqlalchemy
+    return pd, sqlalchemy
 
 
 @app.cell
@@ -39,14 +39,18 @@ def _(mo):
 
 
 @app.cell
-def _(os, sqlalchemy):
+def _(sqlalchemy):
+    db = "postgres"
     user = "postgres.rtkdpjkstgkdgfdxfssk"
-    password = os.environ.get("POSTGRES_PASSWORD", "4Q5rGypzheEknaOP")
+    password = "4Q5rGypzheEknaOP"
+    port = "5432"
+
     DATABASE_URL = (
                 f"postgresql://{user}:{password}"
-                "@aws-0-eu-west-2.pooler.supabase.com:6543/postgres"
+                f"@aws-0-eu-west-2.pooler.supabase.com:{port}/{db}"
             )
     engine = sqlalchemy.create_engine(DATABASE_URL)
+    print(DATABASE_URL)
     return (engine,)
 
 
@@ -262,7 +266,7 @@ def _(loan_default, mo):
             FROM cleaned_data
         WHERE gender IS NOT NULL
             AND approv_in_adv IS NOT NULL
-            AND loan_purpose IS NOT NULL 
+            AND loan_purpose IS NOT NULL
         """
     )
     return (df,)
